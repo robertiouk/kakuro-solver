@@ -17,6 +17,9 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.projectlombok:lombok:1.18.18'
+    annotationProcessor 'org.projectlombok:lombok:1.18.18'
+
     // Use JUnit test framework.
     testImplementation 'junit:junit:4.13'
 
