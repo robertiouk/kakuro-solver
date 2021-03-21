@@ -15,10 +15,10 @@ public class CellSequence {
 
     public void registerCell(final SolutionCell cell) {
         cells.add(cell);
-        cell.setSolutionEvent(this::updatePossibilities);
+        cell.addSolutionEvent(this::updatePossibilities);
         cell.filterPossibilities(possibilities);
     }
-    
+
     private void updatePossibilities(final int solution) {
         possibilities.remove(solution);
         cells.forEach(cell -> cell.filterPossibilities(possibilities));

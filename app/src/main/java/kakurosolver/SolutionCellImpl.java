@@ -1,5 +1,7 @@
 package kakurosolver;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -8,7 +10,7 @@ import java.util.stream.IntStream;
 public class SolutionCellImpl implements SolutionCell {
     private final Set<Integer> possibilities =
             IntStream.range(1, 10).boxed().collect(Collectors.toSet());
-    private Consumer<Integer> solutionEvent;
+    private final Collection<Consumer<Integer>> solutionEvents = new ArrayList<>();
 
     @Override
     public void filterPossibilities(final Set<Integer> possibilities) {
@@ -18,14 +20,14 @@ public class SolutionCellImpl implements SolutionCell {
         toRemove.forEach(this.possibilities::remove);
 
         if (this.possibilities.size() == 1) {
-            solutionEvent.accept(this.possibilities.stream()
+            solutionEvents.forEach(s -> s.accept(this.possibilities.stream()
                     .findFirst()
-                    .orElseThrow(IllegalStateException::new));
+                    .orElseThrow(IllegalStateException::new)));
         }
     }
 
     @Override
-    public void setSolutionEvent(final Consumer<Integer> solutionEvent) {
-        this.solutionEvent = solutionEvent;
+    public void addSolutionEvent(final Consumer<Integer> solutionEvent) {
+        solutionEvents.add(solutionEvent);
     }
 }

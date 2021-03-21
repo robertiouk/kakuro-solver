@@ -21,5 +21,5 @@ public interface SolutionCell extends Cell {
      * Set the event to be executed when a solution is found for the cell.
      * @param solutionEvent the event to be executed, which contains the solution
      */
-    void setSolutionEvent(Consumer<Integer> solutionEvent);
+    void addSolutionEvent(Consumer<Integer> solutionEvent);
 }
