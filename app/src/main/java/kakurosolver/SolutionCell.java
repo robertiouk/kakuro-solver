@@ -22,4 +22,10 @@ public interface SolutionCell extends Cell {
      * @param solutionEvent the event to be executed, which contains the solution
      */
     void addSolutionEvent(Consumer<Integer> solutionEvent);
+
+    /**
+     * Determine whether a cell has been solved or not.
+     * @return True if solved, False if not
+     */
+    boolean isSolved();
 }

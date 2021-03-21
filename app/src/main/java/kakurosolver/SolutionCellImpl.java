@@ -30,4 +30,9 @@ public class SolutionCellImpl implements SolutionCell {
     public void addSolutionEvent(final Consumer<Integer> solutionEvent) {
         solutionEvents.add(solutionEvent);
     }
+
+    @Override
+    public boolean isSolved() {
+        return possibilities.size() == 1;
+    }
 }

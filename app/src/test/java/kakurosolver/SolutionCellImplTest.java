@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class SolutionCellImplTest {
 
@@ -17,10 +17,15 @@ public class SolutionCellImplTest {
 
         cell.filterPossibilities(Set.of(4,2,1));
         assertEquals(0, solution.get());
+        
+        assertFalse(cell.isSolved());
 
         cell.filterPossibilities(Set.of(5,1));
         assertEquals(1, solution.get());
+        
+        assertTrue(cell.isSolved());
     }
+
 
     @Test
     public void multipleSolutions() {
