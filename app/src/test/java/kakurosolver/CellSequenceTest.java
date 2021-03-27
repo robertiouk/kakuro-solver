@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -27,7 +28,17 @@ public class CellSequenceTest {
         cell2 = mock(SolutionCell.class);
 
         possibilities = Set.of(1, 2, 3);
-        sequence = new CellSequence(possibilities, solvedCells::add);
+        sequence = new CellSequence(List.of(possibilities), solvedCells::add);
+    }
+
+    @Test
+    public void testMultipleSequences() {
+        final var altPossibilities = Set.of(2,4,6);
+        sequence = new CellSequence(List.of(possibilities, altPossibilities), a -> {});
+
+        sequence.registerCell(cell1);
+
+        verify(cell1).filterPossibilities(eq(Set.of(1,2,3,4,6)));
     }
 
     @Test
