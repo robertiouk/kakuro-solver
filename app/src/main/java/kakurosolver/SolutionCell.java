@@ -1,5 +1,6 @@
 package kakurosolver;
 
+import java.util.Collection;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -18,10 +19,10 @@ public interface SolutionCell extends Cell {
     void filterPossibilities(Set<Integer> possibilities);
 
     /**
-     * Set the event to be executed when a solution is found for the cell.
-     * @param solutionEvent the event to be executed, which contains the solution
+     * Set the event to be executed when the potential solution is updated for the cell.
+     * @param updateEvent the event to be executed, which contains the remaining possible solutions
      */
-    void addSolutionEvent(Consumer<Integer> solutionEvent);
+    void addUpdateEvent(Consumer<Collection<Integer>> updateEvent);
 
     /**
      * Determine whether a cell has been solved or not.

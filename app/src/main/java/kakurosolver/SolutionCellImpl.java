@@ -10,7 +10,7 @@ import java.util.stream.IntStream;
 public class SolutionCellImpl implements SolutionCell {
     private final Set<Integer> possibilities =
             IntStream.range(1, 10).boxed().collect(Collectors.toSet());
-    private final Collection<Consumer<Integer>> solutionEvents = new ArrayList<>();
+    private final Collection<Consumer<Collection<Integer>>> solutionEvents = new ArrayList<>();
 
     @Override
     public void filterPossibilities(final Set<Integer> possibilities) {
@@ -19,16 +19,14 @@ public class SolutionCellImpl implements SolutionCell {
                 .collect(Collectors.toSet());
         toRemove.forEach(this.possibilities::remove);
 
-        if (this.possibilities.size() == 1) {
-            solutionEvents.forEach(s -> s.accept(this.possibilities.stream()
-                    .findFirst()
-                    .orElseThrow(IllegalStateException::new)));
+        if (!toRemove.isEmpty()) {
+            solutionEvents.forEach(s -> s.accept(this.possibilities));
         }
     }
 
     @Override
-    public void addSolutionEvent(final Consumer<Integer> solutionEvent) {
-        solutionEvents.add(solutionEvent);
+    public void addUpdateEvent(final Consumer<Collection<Integer>> updateEvent) {
+        solutionEvents.add(updateEvent);
     }
 
     @Override
