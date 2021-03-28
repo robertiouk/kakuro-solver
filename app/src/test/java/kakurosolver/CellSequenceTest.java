@@ -154,6 +154,28 @@ public class CellSequenceTest {
      */
     @Test
     public void testDeduction_exclude_incompatible_sequences() {
+        final var cell1 = mock(SolutionCell.class);
+        when(cell1.getPossibilities()).thenReturn("12456789");
+        final var cell2 = mock(SolutionCell.class);
+        when(cell2.getPossibilities()).thenReturn("679");
+        final var cell3 = mock(SolutionCell.class);
+        when(cell3.getPossibilities()).thenReturn("124");
 
+        sequence = new CellSequence(List.of(Set.of(389),
+                Set.of(479),
+                Set.of(569),
+                Set.of(578)), solvedCells::add);
+
+        sequence.registerCell(cell1);
+        sequence.registerCell(cell2);
+        sequence.registerCell(cell3);
+
+        setupCell(cell1, Set.of(1,2,4,5,6,7,8,9));
+        setupCell(cell2, Set.of(6,7,9));
+        setupCell(cell3, Set.of(1,2,4));
+
+        verify(cell1).filterPossibilities(eq(Set.of(7)));
+        verify(cell2).filterPossibilities(eq(Set.of(9)));
+        verify(cell3).filterPossibilities(eq(Set.of(4)));
     }
 }
