@@ -33,4 +33,11 @@ public class SolutionCellImpl implements SolutionCell {
     public boolean isSolved() {
         return possibilities.size() == 1;
     }
+
+    @Override
+    public String getPossibilities() {
+        return possibilities.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining());
+    }
 }

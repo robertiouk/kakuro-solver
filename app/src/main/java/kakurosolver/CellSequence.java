@@ -2,9 +2,7 @@ package kakurosolver;
 
 import lombok.Getter;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -41,9 +39,29 @@ public class CellSequence {
         }
 
         // Check for matching groups
-        // Todo: 1) Get all cell combos,
-        // Todo: 2) Count matching cell combos
-        // Todo: 3) If n matches == n numbers in combo then remove match numbers from other cells
+        // 1) Get all cell combos,
+        // 2) Count matching cell combos
+        // 3) If n matches == n numbers in combo then remove match numbers from other cells
+        final var cellPossibilities = new HashMap<String, Integer>();
+        cells.forEach(c -> {
+            final var stringified = c.getPossibilities();
+            cellPossibilities.computeIfPresent(stringified, (s, i) -> i + 1);
+            cellPossibilities.putIfAbsent(stringified, 1);
+        });
+        cellPossibilities.entrySet().stream()
+                .filter(e -> e.getKey().length() == e.getValue() && e.getKey().length() > 1)
+                .forEach(e -> cells.stream()
+                        .filter(c -> !c.isSolved() && !c.getPossibilities().equals(e.getKey()))
+                        .forEach(c -> {
+                            // Remove matched combo from current cell possibilities
+                            final var deduced = Arrays.stream(c.getPossibilities()
+                                    .split("(?!^)"))
+                                    .filter(n -> !e.getKey().contains(n))
+                                    .map(Integer::valueOf)
+                                    .collect(Collectors.toSet());
+                            c.filterPossibilities(deduced);
+                        }));
+
 
         // Check for invalid sequences
         // Todo: need to recursively solve this
@@ -54,7 +72,6 @@ public class CellSequence {
         cells.stream()
                 .filter(cell -> !cell.isSolved())
                 .forEach(cell -> cell.filterPossibilities(possibilities));
-
 
         if (possibilities.size() == 1) {
             isComplete = true;

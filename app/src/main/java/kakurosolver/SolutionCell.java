@@ -29,4 +29,10 @@ public interface SolutionCell extends Cell {
      * @return True if solved, False if not
      */
     boolean isSolved();
+
+    /**
+     * Get the remaining possibilities for the cell.
+     * @return the remaining possibilities as a String.
+     */
+    String getPossibilities();
 }
