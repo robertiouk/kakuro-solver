@@ -51,4 +51,40 @@ public class SolutionCellImplTest {
         assertEquals(1, event1.stream().findFirst().get().intValue());
         assertEquals(1, event2.stream().findFirst().get().intValue());
     }
+
+    @Test
+    public void testGetPossibilites() {
+        final var cell = new SolutionCellImpl();
+
+        assertEquals("123456789", cell.getPossibilities());
+    }
+
+    @Test
+    public void testIsCompatible() {
+        final var cell = new SolutionCellImpl();
+
+        assertTrue(cell.isCompatible(1));
+        assertFalse(cell.isCompatible(10));
+    }
+
+    @Test
+    public void testEquals() {
+        final var cell1 = new SolutionCellImpl();
+        final var cell2 = new SolutionCellImpl();
+
+        assertEquals(cell1, cell1);
+
+        assertNotEquals(cell1, cell2);
+
+        assertNotEquals(cell1, new Object());
+    }
+
+    @Test
+    public void testHashCode() {
+        final var cell1 = new SolutionCellImpl();
+        final var cell2 = new SolutionCellImpl();
+
+        assertEquals(cell1.hashCode(), cell1.hashCode());
+        assertNotEquals(cell1.hashCode(), cell2.hashCode());
+    }
 }

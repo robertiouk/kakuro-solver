@@ -35,4 +35,11 @@ public interface SolutionCell extends Cell {
      * @return the remaining possibilities as a String.
      */
     String getPossibilities();
+
+    /**
+     * Get whether a given number is compatible within the potential cell solution.
+     * @param number the number to test
+     * @return True if compatible, False if not
+     */
+    boolean isCompatible(int number);
 }

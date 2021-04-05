@@ -11,6 +11,7 @@ public class CellSequence {
     private final Set<Integer> possibilities;
     private final Collection<Set<Integer>> allPossibilities;
     private final Consumer<SolutionCell> solutionEvent;
+    private final int sequenceSize;
     @Getter
     private boolean isComplete;
 
@@ -21,6 +22,8 @@ public class CellSequence {
                 .collect(Collectors.toSet());
         this.cells = new ArrayList<>();
         this.solutionEvent = solutionEvent;
+
+        sequenceSize = allPossibilities.stream().findFirst().map(Set::size).orElse(0);
     }
 
     public void registerCell(final SolutionCell cell) {
@@ -64,9 +67,13 @@ public class CellSequence {
 
 
         // Check for invalid sequences
-        // Todo: need to recursively solve this
-        // Todo: Each combo number needs to be tried in each cell (recursively)
-        // Todo: If a number can't fit in any cell then combo has failed
+        if (cells.size() == sequenceSize) {
+            final var toRemove = allPossibilities.stream()
+                    .filter(c -> !testCombination(c))
+                    .collect(Collectors.toList());
+            allPossibilities.removeAll(toRemove);
+            allPossibilities.forEach(combo -> cells.forEach(c -> c.filterPossibilities(combo)));
+        }
 
         // Todo: only do this if possibilities have changed
         cells.stream()
@@ -76,5 +83,28 @@ public class CellSequence {
         if (possibilities.size() == 1) {
             isComplete = true;
         }
+    }
+
+    private boolean testCombination(final Set<Integer> combo) {
+        // 389 x
+        // 3 = 0 x
+        // 8 = 2 c1, c2
+        // 9 = 2 c1, c2
+        // 569 x
+        // 5 = 1 c1
+        // 6 = 2 c1, c2
+        // 9 = 2 c1, c2
+        // 579 x
+        // 5 = 1 c1
+        // 7 = 1 c1
+        // 9 = 2 c1, c2
+        // 479 <-
+        // 4 = 2 c1, c3
+        // 7 = 1 c1
+        // 9 = 2 c1, c2
+        return combo.stream()
+                .flatMap(i -> cells.stream()
+                        .filter(c -> c.isCompatible(i)))
+                .collect(Collectors.toSet()).size() == cells.size();
     }
 }
