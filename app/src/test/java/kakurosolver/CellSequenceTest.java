@@ -25,7 +25,9 @@ public class CellSequenceTest {
     public void setup() {
         solvedCells = new HashSet<>();
         cell1 = mock(SolutionCell.class);
+        when(cell1.getPossibilities()).thenReturn("123456789");
         cell2 = mock(SolutionCell.class);
+        when(cell2.getPossibilities()).thenReturn("123456789");
 
         possibilities = Set.of(1, 2, 3);
         sequence = new CellSequence(List.of(possibilities), solvedCells::add);
@@ -56,6 +58,10 @@ public class CellSequenceTest {
     @Test
     public void isComplete() {
         final var cell3 = mock(SolutionCell.class);
+        when(cell3.getPossibilities()).thenReturn("123456789");
+        when(cell1.isCompatible(anyInt())).thenReturn(true);
+        when(cell2.isCompatible(anyInt())).thenReturn(true);
+        when(cell3.isCompatible(anyInt())).thenReturn(true);
         sequence.registerCell(cell1);
         sequence.registerCell(cell2);
         sequence.registerCell(cell3);

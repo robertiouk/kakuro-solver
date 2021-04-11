@@ -69,11 +69,18 @@ public class CellSequence {
         // Check for invalid sequences
         if (cells.size() == sequenceSize) {
             final var toRemove = allPossibilities.stream()
-                    .filter(c -> !testCombination(c))
+                    .filter(c -> {
+                        var b = !testCombination(c);
+                        if (b) System.out.println(c);
+                        return b;
+                    })
                     .collect(Collectors.toList());
             allPossibilities.removeAll(toRemove);
-            allPossibilities.forEach(combo -> cells.forEach(c -> c.filterPossibilities(combo)));
+            //allPossibilities.forEach(combo -> cells.forEach(c -> c.filterPossibilities(combo)));
         }
+
+        final var update = allPossibilities.stream().flatMap(Collection::stream).collect(Collectors.toSet());
+        possibilities.removeIf(i -> !update.contains(i));
 
         // Todo: only do this if possibilities have changed
         cells.stream()
