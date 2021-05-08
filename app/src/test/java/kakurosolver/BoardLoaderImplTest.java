@@ -3,16 +3,18 @@ package kakurosolver;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
-
-public class BoardLoaderTest {
+public class BoardLoaderImplTest {
+    private BoardLoaderImpl loader;
     @Before
     public void setup() {
-        final var loader = new BoardLoader();
+        loader = new BoardLoaderImpl();
     }
 
     @Test
-    public void test() {
-        
+    public void testGetSequences() {
+        final var sequences = loader.getSequences();
+
+        sequences.forEach(c -> c.isComplete());
+        loader.printBoard();
     }
 }

@@ -3,18 +3,24 @@ package kakurosolver;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 public class BoardLoaderImpl implements BoardLoader {
     public static final String HEADER_PATTERN = "(\\d*)\\|(\\d*)";
     private final CombinationResolver resolver;
+    private final Function<Integer, Function<Integer, SolutionCell>> memoizedFunction;
+    private final Collection<CellSequence> sequences;
     private String[][] board;
-    private Collection<CellSequence> sequences;
 
     public BoardLoaderImpl() {
         sequences = new ArrayList<>();
         resolver = new CombinationResolverImpl();
+        memoizedFunction = Memoizer.memoize(x ->
+                Memoizer.memoize(y -> new SolutionCellImpl()));
+
         buildTemplateBoard();
     }
 
@@ -45,14 +51,20 @@ public class BoardLoaderImpl implements BoardLoader {
                 if (matcher.find()) {
                     final var colTotal = matcher.group(1);
                     final var rowTotal = matcher.group(2);
+                    final var final_r = r;
+                    final var final_c = c;
+                    final Supplier<SolutionCell> supplier = () -> {
+                        System.out.println(final_r + " " + final_c);
+                        return memoizedFunction.apply(final_r).apply(final_c);
+                    };
                     if (!colTotal.isEmpty()) {
                         final var sequence =
-                                buildSequence(r, c,true, board.length, Integer.parseInt(colTotal));
+                                buildSequence(r, c,true, board.length, Integer.parseInt(colTotal), supplier);
                         sequences.add(sequence);
                     }
                     if (!rowTotal.isEmpty()) {
                         final var sequence =
-                                buildSequence(c, r,false, board[0].length, Integer.parseInt(rowTotal));
+                                buildSequence(c, r,false, board[0].length, Integer.parseInt(rowTotal), supplier);
                         sequences.add(sequence);
                     }
                 }
@@ -64,7 +76,8 @@ public class BoardLoaderImpl implements BoardLoader {
                                        final int secondIndex,
                                        final boolean vertical,
                                        final int maxLength,
-                                       final int targetTotal) {
+                                       final int targetTotal,
+                                       final Supplier<SolutionCell> cellSupplier) {
         var finished = false;
         var currentIndex = startIndex;
 
@@ -83,7 +96,11 @@ public class BoardLoaderImpl implements BoardLoader {
                 targetTotal, sequenceTotal);
         final var sequence = new CellSequence(possibilities, e -> {});
         IntStream.range(0, sequenceTotal)
-                .mapToObj(i -> new SolutionCellImpl())
+                .mapToObj(i -> {
+                    final var row = vertical ? startIndex + i + 1 : secondIndex;
+                    final var col = vertical ? secondIndex : i + startIndex + 1;
+                    return memoizedFunction.apply(row).apply(col);
+                })
                 .forEach(sequence::registerCell);
 
         return sequence;
@@ -92,5 +109,28 @@ public class BoardLoaderImpl implements BoardLoader {
     @Override
     public Collection<CellSequence> getSequences() {
         return Collections.unmodifiableCollection(sequences);
+    }
+
+    public void printBoard() {
+        final var pattern = Pattern.compile(HEADER_PATTERN);
+        for (int r = 0; r < 11; r++) {
+            final var row = board[r];
+            StringBuilder rowString = new StringBuilder();
+            for (int c = 0; c < 11; c++) {
+                final var cell = row[c];
+                final var matcher = pattern.matcher(cell);
+                if (matcher.find()) {
+                    rowString.append(String.format("%1$5s", cell));
+                } else if (memoizedFunction.apply(r).apply(c).isSolved()) {
+                    rowString.append(String.format("%1$5s", memoizedFunction.apply(r).apply(c).getPossibilities()));
+                } else {
+                    rowString.append("     ");
+                }
+                if (c < 10) {
+                    rowString.append(", ");
+                }
+            }
+            System.out.println(rowString);
+        }
     }
 }

@@ -16,13 +16,15 @@ public class SolutionCellImpl implements SolutionCell {
 
     @Override
     public void filterPossibilities(final Set<Integer> possibilities) {
-        final var toRemove = this.possibilities.stream()
-                .filter(n -> !possibilities.contains(n))
-                .collect(Collectors.toSet());
-        toRemove.forEach(this.possibilities::remove);
+        if (!possibilities.isEmpty()) {
+            final var toRemove = this.possibilities.stream()
+                    .filter(n -> !possibilities.contains(n))
+                    .collect(Collectors.toSet());
+            toRemove.forEach(this.possibilities::remove);
 
-        if (!toRemove.isEmpty()) {
-            solutionEvents.forEach(s -> s.accept(this.possibilities));
+            if (!toRemove.isEmpty()) {
+                solutionEvents.forEach(s -> s.accept(this.possibilities));
+            }
         }
     }
 

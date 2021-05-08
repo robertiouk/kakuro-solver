@@ -69,11 +69,7 @@ public class CellSequence {
         // Check for invalid sequences
         if (cells.size() == sequenceSize) {
             final var toRemove = allPossibilities.stream()
-                    .filter(c -> {
-                        var b = !testCombination(c);
-                        if (b) System.out.println(c);
-                        return b;
-                    })
+                    .filter(c -> !testCombination(c))
                     .collect(Collectors.toList());
             allPossibilities.removeAll(toRemove);
             //allPossibilities.forEach(combo -> cells.forEach(c -> c.filterPossibilities(combo)));
