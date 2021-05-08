@@ -35,6 +35,7 @@ public class CellSequence {
 
     public void filterCells() {
         cells.forEach(c -> c.filterPossibilities(possibilities));
+        //TODO check for invalid cell totals here?
     }
 
     private void updatePossibilities(final Collection<Integer> solutions) {
