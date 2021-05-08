@@ -53,7 +53,7 @@ public class SolutionCellImplTest {
     }
 
     @Test
-    public void testGetPossibilites() {
+    public void testGetPossibilities() {
         final var cell = new SolutionCellImpl();
 
         assertEquals("123456789", cell.getPossibilities());

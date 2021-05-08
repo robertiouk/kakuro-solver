@@ -30,7 +30,11 @@ public class CellSequence {
         cells.add(cell);
         cell.addUpdateEvent(solution -> solutionEvent.accept(cell));
         cell.addUpdateEvent(this::updatePossibilities);
-        cell.filterPossibilities(possibilities);
+      //  cell.filterPossibilities(possibilities);
+    }
+
+    public void filterCells() {
+        cells.forEach(c -> c.filterPossibilities(possibilities));
     }
 
     private void updatePossibilities(final Collection<Integer> solutions) {

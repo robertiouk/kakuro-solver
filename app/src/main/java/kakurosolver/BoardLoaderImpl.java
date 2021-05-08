@@ -81,17 +81,21 @@ public class BoardLoaderImpl implements BoardLoader {
         var finished = false;
         var currentIndex = startIndex;
 
+        var sequenceTotal = 0;
         while (!finished) {
             currentIndex++;
             var currentCell = vertical ? board[currentIndex][secondIndex] : board[secondIndex][currentIndex];
             finished = !currentCell.isEmpty() || currentIndex+1 == maxLength;
+            if (currentCell.isEmpty()) {
+                sequenceTotal++;
+            }
         }
 
-        var sequenceTotal = currentIndex - startIndex;
+        /*var sequenceTotal = currentIndex - startIndex;
         // Unless the sequence hit the end of the board, subtract 1
-        if (currentIndex+1 < maxLength) {
+        if (currentIndex+1 <= maxLength) {
             sequenceTotal--;
-        }
+        }*/
         final var possibilities = resolver.getCombinations(
                 targetTotal, sequenceTotal);
         final var sequence = new CellSequence(possibilities, e -> {});
@@ -102,6 +106,7 @@ public class BoardLoaderImpl implements BoardLoader {
                     return memoizedFunction.apply(row).apply(col);
                 })
                 .forEach(sequence::registerCell);
+        sequence.filterCells();
 
         return sequence;
     }
@@ -120,11 +125,11 @@ public class BoardLoaderImpl implements BoardLoader {
                 final var cell = row[c];
                 final var matcher = pattern.matcher(cell);
                 if (matcher.find()) {
-                    rowString.append(String.format("%1$5s", cell));
-                } else if (memoizedFunction.apply(r).apply(c).isSolved()) {
-                    rowString.append(String.format("%1$5s", memoizedFunction.apply(r).apply(c).getPossibilities()));
-                } else {
-                    rowString.append("     ");
+                    rowString.append(String.format("%1$9s", cell));
+                } else {//if (memoizedFunction.apply(r).apply(c).isSolved()) {
+                    rowString.append(String.format("%1$9s", memoizedFunction.apply(r).apply(c).getPossibilities()));
+                /*} else {
+                    rowString.append("     ");*/
                 }
                 if (c < 10) {
                     rowString.append(", ");

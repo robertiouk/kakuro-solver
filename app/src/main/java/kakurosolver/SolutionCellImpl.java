@@ -16,7 +16,7 @@ public class SolutionCellImpl implements SolutionCell {
 
     @Override
     public void filterPossibilities(final Set<Integer> possibilities) {
-        if (!possibilities.isEmpty()) {
+        if (!possibilities.isEmpty() && !this.isSolved()) {
             final var toRemove = this.possibilities.stream()
                     .filter(n -> !possibilities.contains(n))
                     .collect(Collectors.toSet());

@@ -187,4 +187,22 @@ public class CellSequenceTest {
         verify(cell2, atLeastOnce()).filterPossibilities(eq(Set.of(4,7,9)));
         verify(cell3, atLeastOnce()).filterPossibilities(eq(Set.of(4,7,9)));
     }
+
+    @Test
+    public void testDeduction_exclude_incompatible_total() {
+        //  7|,        6|
+        //  124,       12
+        //  ^ must be 4
+
+        final var cell1 = mock(SolutionCell.class);
+        when(cell1.getPossibilities()).thenReturn("124");
+        final var cell2 = mock(SolutionCell.class);
+        when(cell2.getPossibilities()).thenReturn("12");
+
+        sequence = new CellSequence(List.of(Set.of(1,5), Set.of(2,4)), c -> {});
+        sequence.filterCells();
+
+        verify(cell1).filterPossibilities(Set.of(4));
+        verify(cell2).filterPossibilities(Set.of(2));
+    }
 }
